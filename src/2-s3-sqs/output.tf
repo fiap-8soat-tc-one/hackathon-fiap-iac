@@ -13,3 +13,11 @@ output "notification_queue_id" {
 output "notification_queue_url" {
   value = aws_sqs_queue.notification_queue.url
 }
+
+output "bucket_id" {
+  value = aws_s3_bucket.upload_bucket.id
+}
+
+output "bucket_domain_name" {
+  value = aws_s3_bucket.upload_bucket.bucket_domain_name
+}
