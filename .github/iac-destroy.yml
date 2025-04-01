@@ -30,50 +30,14 @@ jobs:
     - name: Get Session Token
       run: echo aws sts get-session-token        
 
-    - name: Initialize Terraform EKS
-      working-directory: ./src/4-eks
+    - name: Initialize Terraform
+      working-directory: ./src
       run: terraform init
 
-    - name: Terraform Plan EKS
-      working-directory: ./src/4-eks
+    - name: Terraform Plan
+      working-directory: ./src
       run: terraform plan -destroy -out=tfplan
 
-    - name: Terraform Apply EKS
-      working-directory: ./src/4-eks
-      run: terraform apply -auto-approve tfplan       
-
-    - name: Initialize Terraform DynamoDB
-      working-directory: ./src/3-dynamodb
-      run: terraform init
-
-    - name: Terraform Plan DynamoDB
-      working-directory: ./src/3-dynamodb
-      run: terraform plan -destroy -out=tfplan
-
-    - name: Terraform Apply DynamoDB
-      working-directory: ./src/3-dynamodb
-      run: terraform apply -auto-approve tfplan
-
-    - name: Initialize Terraform SQS
-      working-directory: ./src/2-sqs
-      run: terraform init
-
-    - name: Terraform Plan SQS
-      working-directory: ./src/2-sqs
-      run: terraform plan -destroy -out=tfplan
-
-    - name: Terraform Apply SQS
-      working-directory: ./src/2-sqs
-      run: terraform apply -auto-approve tfplan
-
-    - name: Initialize Terraform VPC
-      working-directory: ./src/1-vpc
-      run: terraform init
-
-    - name: Terraform Plan VPC
-      working-directory: ./src/1-vpc
-      run: terraform plan -destroy -out=tfplan
-
-    - name: Terraform Apply VPC
-      working-directory: ./src/1-vpc
+    - name: Terraform Apply
+      working-directory: ./src
       run: terraform apply -auto-approve tfplan
