@@ -4,10 +4,6 @@ variable "aws_api_gateway_authorizer_name" {
   default     = "cognito-authorizer"
 }
 
-variable "aws_region" {
-  default = "us-east-1"
-}
-
 variable "aws_api_gateway_authorizer_type" {
   description = "ID do authorizer do API Gateway"
   type        = string

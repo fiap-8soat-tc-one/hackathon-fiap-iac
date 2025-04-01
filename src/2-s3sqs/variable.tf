@@ -1,7 +1,3 @@
-variable "aws_region" {
-  default = "us-east-1"
-}
-
 variable "sqs_upload_queue_name" {
   default = "upload-event-queue"
 }

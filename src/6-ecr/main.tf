@@ -9,7 +9,7 @@ terraform {
 
   backend "s3" {
     bucket = "bucket-tfst-fiap-hackaton-t32"
-    key    = "apigtw/terraform.state"
+    key    = "ecr/terraform.state"
     region = "us-east-1"
   }
 }

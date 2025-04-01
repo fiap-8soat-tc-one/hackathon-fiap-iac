@@ -1,3 +1,7 @@
+# Get AWS account and region information
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
 data "terraform_remote_state" "dynadb" {
   backend = "s3"
 
@@ -29,3 +33,4 @@ data "terraform_remote_state" "lambda" {
     region = "us-east-1"
   }
 }
+

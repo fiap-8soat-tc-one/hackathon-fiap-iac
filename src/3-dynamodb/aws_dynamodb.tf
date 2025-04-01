@@ -9,11 +9,6 @@ resource "aws_dynamodb_table" "uploads" {
   }
 
   attribute {
-    name = "nome"
-    type = "S"
-  }
-
-  attribute {
     name = "email"
     type = "S"
   }
@@ -31,6 +26,18 @@ resource "aws_dynamodb_table" "uploads" {
   global_secondary_index {
     name            = "email-index"
     hash_key        = "email"
+    projection_type = "ALL"
+  }
+
+  global_secondary_index {
+    name            = "status-index"
+    hash_key        = "status_upload"
+    projection_type = "ALL"
+  }
+
+  global_secondary_index {
+    name            = "data-criacao-index"
+    hash_key        = "data_criacao"
     projection_type = "ALL"
   }
 }
