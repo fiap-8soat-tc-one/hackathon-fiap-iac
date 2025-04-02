@@ -60,13 +60,14 @@ resource "aws_api_gateway_resource" "files" {
 }
 
 resource "aws_api_gateway_method" "dynamodb_methods" {
-  for_each      = toset(["GET", "POST", "PUT", "DELETE"])
+  for_each      = toset(local.http_methods)
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.files.id
   http_method   = each.key
   authorization = "COGNITO_USER_POOLS"
   authorizer_id = aws_api_gateway_authorizer.cognito.id
 }
+
 
 resource "aws_api_gateway_integration" "dynamodb_integration" {
   for_each                = aws_api_gateway_method.dynamodb_methods
@@ -75,13 +76,27 @@ resource "aws_api_gateway_integration" "dynamodb_integration" {
   http_method             = each.key
   integration_http_method = "POST"
   type                    = "AWS"
-  uri                     = "arn:aws:apigateway:${data.aws_region.current.name}:dynamodb:action/${each.key}Item"
+  uri                     = "arn:aws:apigateway:${data.aws_region.current.name}:dynamodb:action/${local.dynamodb_actions[each.key]}"
   credentials             = aws_iam_role.api_gateway_dynamodb_role.arn
 
   request_templates = {
     "application/json" = each.key == "GET" ? local.get_item_template : local.default_template
   }
+
+  depends_on = [aws_api_gateway_method.dynamodb_methods]
 }
+
+locals {
+  http_methods = ["GET", "POST", "PUT", "DELETE"]
+  dynamodb_actions = {
+    "GET"    = "GetItem"
+    "POST"   = "PutItem"
+    "PUT"    = "UpdateItem"
+    "DELETE" = "DeleteItem"
+  }
+}
+
+
 
 locals {
   get_item_template = <<EOF

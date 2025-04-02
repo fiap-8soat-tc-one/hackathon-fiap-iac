@@ -7,7 +7,7 @@ resource "aws_ecr_repository" "auth_lambda_repo" {
 }
 
 resource "aws_ecr_repository" "file_engine_repo" {
-  name = "file_engine_repo"
+  name = "file-engine-repo"
 }
 
 resource "aws_ecr_repository" "notification_repo" {
