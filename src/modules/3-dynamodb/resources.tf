@@ -19,6 +19,11 @@ resource "aws_dynamodb_table" "uploads" {
   }
 
   attribute {
+    name = "url_download"
+    type = "S"
+  }
+
+  attribute {
     name = "data_criacao"
     type = "S"
   }
@@ -26,6 +31,12 @@ resource "aws_dynamodb_table" "uploads" {
   global_secondary_index {
     name            = "email-index"
     hash_key        = "email"
+    projection_type = "ALL"
+  }
+
+  global_secondary_index {
+    name            = "url_download-index"
+    hash_key        = "url_download"
     projection_type = "ALL"
   }
 
