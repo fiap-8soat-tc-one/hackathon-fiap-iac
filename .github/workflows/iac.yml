@@ -46,6 +46,8 @@ jobs:
           terraform init
           terraform import module.ecr.aws_ecr_repository.presigned_lambda_repo presigned-lambda-repo
           terraform import module.ecr.aws_ecr_repository.auth_lambda_repo auth-lambda-repo
+          terraform import module.ecr.aws_ecr_repository.file_engine_repo file-engine-repo
+          terraform import module.ecr.aws_ecr_repository.notification_repo notification-repo
         else
           echo "ECR repositories don't exist, proceeding with normal deployment"
         fi

@@ -1,4 +1,4 @@
-resource "aws_iam_role" "apigateway_invoke_lambda_role" {
+resource "aws_iam_role" "api_gateway_invoke_lambda_role" {
   name = "apigateway-invoke-lambda-role"
 
   assume_role_policy = jsonencode({
@@ -15,7 +15,7 @@ resource "aws_iam_role" "apigateway_invoke_lambda_role" {
 
 resource "aws_iam_role_policy" "invoke_lambda_policy" {
   name = "invoke-lambda-from-apigateway"
-  role = aws_iam_role.apigateway_invoke_lambda_role.id
+  role = aws_iam_role.api_gateway_invoke_lambda_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -34,7 +34,7 @@ resource "aws_iam_role_policy" "invoke_lambda_policy" {
   })
 }
 
-resource "aws_iam_role" "apigateway_dynamodb_role" {
+resource "aws_iam_role" "api_gateway_dynamodb_role" {
   name = "apigateway-dynamodb-role"
 
   assume_role_policy = jsonencode({
@@ -51,7 +51,7 @@ resource "aws_iam_role" "apigateway_dynamodb_role" {
 
 resource "aws_iam_role_policy" "apigateway_policy" {
   name = "dynamodb-get-policy"
-  role = aws_iam_role.apigateway_dynamodb_role.id
+  role = aws_iam_role.api_gateway_dynamodb_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",

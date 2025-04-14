@@ -37,17 +37,17 @@ module "ecr" {
   }
 }
 
-module "eks" {
-  source = "./modules/6-eks"
-  providers = {
-    aws = aws
-  }
-  cidr_block = module.vpc.cidr_block
-  vpc_id = module.vpc.id
-  public_subnet_ids = module.vpc.public_subnet_ids
-  dynamodb_access_policy_arn = module.dynamodb.access_policy_arn
-  depends_on = [module.vpc, module.s3sqs ,module.dynamodb]
-}
+# module "eks" {
+#   source = "./modules/6-eks"
+#   providers = {
+#     aws = aws
+#   }
+#   cidr_block = module.vpc.cidr_block
+#   vpc_id = module.vpc.id
+#   public_subnet_ids = module.vpc.public_subnet_ids
+#   dynamodb_access_policy_arn = module.dynamodb.access_policy_arn
+#   depends_on = [module.vpc, module.s3sqs ,module.dynamodb]
+# }
 
 module "lambda" {
   source = "./modules/7-lambda"

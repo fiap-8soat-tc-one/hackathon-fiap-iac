@@ -63,7 +63,7 @@ resource "aws_api_gateway_resource" "files" {
 
 resource "aws_api_gateway_resource" "file_id" {
   rest_api_id = aws_api_gateway_rest_api.api.id
-  parent_id   = aws_api_gateway_rest_api.api.files
+  parent_id   = aws_api_gateway_resource.files.id
   path_part   = "{id}"
 }
 

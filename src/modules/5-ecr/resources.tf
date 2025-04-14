@@ -11,5 +11,5 @@ resource "aws_ecr_repository" "file_engine_repo" {
 }
 
 resource "aws_ecr_repository" "notification_repo" {
-  name = "notification_repo"
+  name = "notification-repo"
 }
