@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
+      url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     
     steps:
     - name: Checkout Repository
@@ -77,6 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
+      url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     steps:
     - name: Checkout Repository
