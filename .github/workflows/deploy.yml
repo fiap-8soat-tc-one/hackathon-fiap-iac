@@ -60,14 +60,7 @@ jobs:
     - name: Terraform Plan
       working-directory: ./src
       run: terraform plan -out=tfplan
-
-    - name: Manual Approval
-      uses: trstringer/manual-approval@v1
-      with:
-        secret: ${{ github.token }}
-        approvers: ${{ github.actor }}
-        minimum-approvals: 1
-
+      
     - name: Terraform Apply
       working-directory: ./src
       run: terraform apply -auto-approve tfplan
@@ -106,13 +99,6 @@ jobs:
     - name: Terraform Plan Destroy
       working-directory: ./src
       run: terraform plan -destroy -out=tfplan
-
-    - name: Manual Approval
-      uses: trstringer/manual-approval@v1
-      with:
-        secret: ${{ github.token }}
-        approvers: ${{ github.actor }}
-        minimum-approvals: 1
 
     - name: Terraform Apply Destroy
       working-directory: ./src
