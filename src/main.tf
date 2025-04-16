@@ -54,9 +54,11 @@ module "lambda" {
   providers = {
     aws = aws
   }
-  auth_lambda_repo = module.ecr.auth_lambda_repo
+  auth_lambda_repo      = module.ecr.auth_lambda_repo
   presigned_lambda_repo = module.ecr.presigned_lambda_repo
-  depends_on = [module.ecr]
+  user_pool_id          = module.cognito.user_pool_id
+  client_id             = module.cognito.client_id
+  depends_on            = [module.ecr, module.cognito]
 }
 
 module "api_gtw" {
@@ -64,10 +66,10 @@ module "api_gtw" {
   providers = {
     aws = aws
   }
-  user_pool_id = module.cognito.user_pool_id
-  auth_lambda_arn = module.lambda.auth_lambda_arn
+  user_pool_id         = module.cognito.user_pool_id
+  auth_lambda_arn      = module.lambda.auth_lambda_arn
   presigned_lambda_arn = module.lambda.presigned_lambda_arn
-  dynamodb_table_name = module.dynamodb.table_name
-  dynamodb_table_arn = module.dynamodb.table_arn
-  depends_on = [module.dynamodb, module.lambda, module.cognito]
+  dynamodb_table_name  = module.dynamodb.table_name
+  dynamodb_table_arn   = module.dynamodb.table_arn
+  depends_on           = [module.dynamodb, module.lambda, module.cognito]
 }

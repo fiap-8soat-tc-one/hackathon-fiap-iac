@@ -20,3 +20,11 @@ variable  "presigned_lambda_repo" {
 variable  "auth_lambda_repo" {
   type        = string
 }
+
+variable "user_pool_id" {
+  type = string
+}
+
+variable "client_id" {
+  type = string
+}
