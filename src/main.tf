@@ -37,26 +37,28 @@ module "ecr" {
   }
 }
 
-# module "eks" {
-#   source = "./modules/6-eks"
-#   providers = {
-#     aws = aws
-#   }
-#   cidr_block = module.vpc.cidr_block
-#   vpc_id = module.vpc.id
-#   public_subnet_ids = module.vpc.public_subnet_ids
-#   dynamodb_access_policy_arn = module.dynamodb.access_policy_arn
-#   depends_on = [module.vpc, module.s3sqs ,module.dynamodb]
-# }
+module "eks" {
+  source = "./modules/6-eks"
+  providers = {
+    aws = aws
+  }
+  cidr_block = module.vpc.cidr_block
+  vpc_id = module.vpc.id
+  public_subnet_ids = module.vpc.public_subnet_ids
+  dynamodb_access_policy_arn = module.dynamodb.access_policy_arn
+  depends_on = [module.vpc, module.s3sqs ,module.dynamodb]
+}
 
 module "lambda" {
   source = "./modules/7-lambda"
   providers = {
     aws = aws
   }
-  auth_lambda_repo = module.ecr.auth_lambda_repo
+  auth_lambda_repo      = module.ecr.auth_lambda_repo
   presigned_lambda_repo = module.ecr.presigned_lambda_repo
-  depends_on = [module.ecr]
+  user_pool_id          = module.cognito.user_pool_id
+  client_id             = module.cognito.client_id
+  depends_on            = [module.ecr, module.cognito]
 }
 
 module "api_gtw" {
@@ -64,10 +66,10 @@ module "api_gtw" {
   providers = {
     aws = aws
   }
-  user_pool_id = module.cognito.user_pool_id
-  auth_lambda_arn = module.lambda.auth_lambda_arn
+  user_pool_id         = module.cognito.user_pool_id
+  auth_lambda_arn      = module.lambda.auth_lambda_arn
   presigned_lambda_arn = module.lambda.presigned_lambda_arn
-  dynamodb_table_name = module.dynamodb.table_name
-  dynamodb_table_arn = module.dynamodb.table_arn
-  depends_on = [module.dynamodb, module.lambda, module.cognito]
+  dynamodb_table_name  = module.dynamodb.table_name
+  dynamodb_table_arn   = module.dynamodb.table_arn
+  depends_on           = [module.dynamodb, module.lambda, module.cognito]
 }
