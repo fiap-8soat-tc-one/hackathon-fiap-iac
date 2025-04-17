@@ -166,6 +166,176 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
 | Azure Functions      | Boa integração com Azure Logic Apps           | Requer atenção ao setup de networking      |
 | OpenFaaS / Knative   | Flexível, pode ser usado on-prem              | Requer gerenciamento e provisionamento     |
 
+## Arquitetura Detalhada 🏗️
+
+### Componentes Implementados
+
+#### 1. Rede (VPC Module)
+- VPC com CIDR 10.0.0.0/16
+- 2 Subnets públicas em diferentes AZs (us-east-1a, us-east-1b)
+- Internet Gateway para acesso externo
+- Route Tables para roteamento de tráfego
+
+#### 2. Armazenamento e Mensageria (S3-SQS Module)
+- Bucket S3 para armazenamento de arquivos
+- Fila SQS para eventos de upload
+- Fila SQS para notificações
+- Integração S3 -> SQS para notificação automática de uploads
+- Políticas IAM para acesso seguro
+
+#### 3. Banco de Dados (DynamoDB Module)
+- Tabela para rastreamento de uploads
+- Índices GSI para consultas eficientes:
+  - email-index
+  - url_download-index
+  - status-index
+  - data-criacao-index
+- Política de acesso granular via VPC
+
+#### 4. Autenticação (Cognito Module)
+- User Pool com autenticação email/senha
+- Client App configurado para fluxos:
+  - ALLOW_USER_PASSWORD_AUTH
+  - ALLOW_REFRESH_TOKEN_AUTH
+  - ALLOW_USER_SRP_AUTH
+- Tokens configurados:
+  - Access Token: 1 hora
+  - ID Token: 1 hora
+  - Refresh Token: 30 dias
+
+#### 5. Container Registry (ECR Module)
+- Repositórios para imagens Docker:
+  - presigned-lambda-repo
+  - auth-lambda-repo
+  - file-engine-repo
+  - notification-repo
+
+#### 6. Orquestração (EKS Module)
+- Cluster EKS gerenciado
+- Node Group com 2 instâncias t3.medium
+- Security Groups para comunicação
+- IAM Roles para cluster e nodes
+- Integrações com CloudWatch
+
+#### 7. Funções Serverless (Lambda Module)
+- Lambda para autenticação
+- Lambda para geração de URLs pré-assinadas
+- Ambiente configurado para Java
+- X-Ray habilitado para rastreamento
+- CloudWatch Logs integrado
+
+#### 8. API Gateway
+- REST API com endpoints:
+  - /auth: Autenticação (POST)
+  - /presigned: Geração de URLs (GET)
+  - /files/{id}: Operações no DynamoDB (GET)
+- Autorização via Cognito
+- CloudWatch Logs com retenção de 7 dias
+
+### Fluxo de Execução 🔄
+
+1. **Autenticação**
+   ```
+   Cliente -> API Gateway (/auth) -> Lambda -> Cognito -> JWT Token
+   ```
+
+2. **Upload de Arquivo**
+   ```
+   Cliente -> API Gateway (/presigned) -> Lambda -> S3 Presigned URL
+   Cliente -> S3 Upload -> SQS Notification -> Lambda Processing
+   ```
+
+3. **Consulta de Status**
+   ```
+   Cliente -> API Gateway (/files/{id}) -> DynamoDB -> Response
+   ```
+
+### Dependências entre Módulos 🔗
+
+```mermaid
+graph TD
+    VPC[1.VPC] --> S3SQS[2.S3-SQS]
+    VPC --> DynamoDB[3.DynamoDB]
+    Cognito[4.Cognito] --> Lambda[7.Lambda]
+    ECR[5.ECR] --> Lambda
+    VPC --> EKS[6.EKS]
+    S3SQS --> EKS
+    DynamoDB --> EKS
+    Lambda --> APIGW[8.API Gateway]
+    Cognito --> APIGW
+    DynamoDB --> APIGW
+```
+
+### Considerações de Segurança 🔒
+
+1. **Rede**
+   - VPC com subnets em múltiplas AZs
+   - Security Groups restritivos
+   - Internet Gateway controlado
+
+2. **Autenticação e Autorização**
+   - Cognito com políticas de senha fortes
+   - JWT tokens com vida útil limitada
+   - IAM roles granulares
+
+3. **Dados**
+   - DynamoDB com criptografia em repouso
+   - S3 com URLs pré-assinadas
+   - Logs retidos por 7 dias
+
+### Monitoramento e Observabilidade 📊
+
+1. **Logs**
+   - CloudWatch Logs para API Gateway
+   - X-Ray para rastreamento de Lambda
+   - EKS integrado com CloudWatch
+
+2. **Métricas**
+   - DynamoDB capacity tracking
+   - Lambda execution metrics
+   - API Gateway request tracking
+
+### Escalabilidade ⚖️
+
+1. **Compute**
+   - EKS Node Group: 2-2 nodes
+   - Lambda: Escala automática
+   - API Gateway: Sem limites configurados
+
+2. **Storage**
+   - DynamoDB: PAY_PER_REQUEST
+   - S3: Sem limites
+   - SQS: Filas padrão
+
+### Custos e Otimizações 💰
+
+1. **Compute**
+   - EKS: t3.medium para melhor custo-benefício
+   - Lambda: Timeout de 60s
+   - Spot Instances não utilizadas (possível otimização)
+
+2. **Storage**
+   - DynamoDB: Pay-per-request para cargas variáveis
+   - S3: Lifecycle policies podem ser implementadas
+   - Logs: Retenção de 7 dias para controle de custos
+
+## Próximos Passos 🎯
+
+1. **Otimizações**
+   - Implementar Spot Instances no EKS
+   - Configurar S3 Lifecycle policies
+   - Adicionar WAF na API Gateway
+
+2. **Monitoramento**
+   - Implementar dashboards CloudWatch
+   - Configurar alarmes para métricas chave
+   - Adicionar tracing distribuído
+
+3. **Segurança**
+   - Implementar AWS KMS para criptografia
+   - Adicionar AWS Shield para DDoS
+   - Configurar AWS Config Rules
+
 ## Conclusão 📘
 
 A arquitetura foi desenhada com foco em boas práticas de microsserviços, segurança, resiliência e facilidade de automação. Cada componente da AWS foi selecionado por sua integração nativa, confiabilidade e adesão ao modelo serverless, reduzindo custos operacionais e acelerando o desenvolvimento.
