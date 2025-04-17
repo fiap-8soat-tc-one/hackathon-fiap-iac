@@ -1,4 +1,5 @@
 # Arquitetura AWS para o Hackathon FIAP 🚀
+[![Terraform Infrastructure Management](https://github.com/fiap-8soat-tc-one/hackathon-fiap-iac/actions/workflows/deploy.yml/badge.svg)](https://github.com/fiap-8soat-tc-one/hackathon-fiap-iac/actions/workflows/deploy.yml)
 
 Este documento tem como objetivo apresentar e justificar a escolha das tecnologias utilizadas na arquitetura proposta para o Hackaton da FIAP. Cada serviço da AWS e componente de infraestrutura foi selecionado com base em critérios de escalabilidade, segurança, integração, facilidade de operação e aderência a um cenário realista e moderno de aplicações cloud-native.
 
