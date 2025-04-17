@@ -1,4 +1,5 @@
 # Arquitetura AWS para o Hackathon FIAP 🚀
+
 [![Terraform Infrastructure Management](https://github.com/fiap-8soat-tc-one/hackathon-fiap-iac/actions/workflows/deploy.yml/badge.svg)](https://github.com/fiap-8soat-tc-one/hackathon-fiap-iac/actions/workflows/deploy.yml)
 
 Este documento tem como objetivo apresentar e justificar a escolha das tecnologias utilizadas na arquitetura proposta para o Hackaton da FIAP. Cada serviço da AWS e componente de infraestrutura foi selecionado com base em critérios de escalabilidade, segurança, integração, facilidade de operação e aderência a um cenário realista e moderno de aplicações cloud-native.
@@ -25,7 +26,7 @@ O Amazon Elastic Kubernetes Service (EKS) é o serviço gerenciado de Kubernetes
 |------------|------|------------|
 | EKS (AWS) | Altamente integrado, seguro, pronto para produção | Custo do plano de controle, curva de aprendizado |
 | AKS (Azure) | Boa integração com DevOps e AD | Menos flexível para redes customizadas |
-| GKE (Google) | Avançado em automação e upgrades | Preço elevado, vendor lock-in |
+| GKE (Google) | Avançado em automação e upgrades | Preço elevado |
 | K8s on-prem | Total controle | Elevado custo de operação |
 
 ## Amazon Cognito 🔐
@@ -171,12 +172,14 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
 ### Componentes Implementados
 
 #### 1. Rede (VPC Module)
+
 - VPC com CIDR 10.0.0.0/16
 - 2 Subnets públicas em diferentes AZs (us-east-1a, us-east-1b)
 - Internet Gateway para acesso externo
 - Route Tables para roteamento de tráfego
 
 #### 2. Armazenamento e Mensageria (S3-SQS Module)
+
 - Bucket S3 para armazenamento de arquivos
 - Fila SQS para eventos de upload
 - Fila SQS para notificações
@@ -184,6 +187,7 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
 - Políticas IAM para acesso seguro
 
 #### 3. Banco de Dados (DynamoDB Module)
+
 - Tabela para rastreamento de uploads
 - Índices GSI para consultas eficientes:
   - email-index
@@ -193,6 +197,7 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
 - Política de acesso granular via VPC
 
 #### 4. Autenticação (Cognito Module)
+
 - User Pool com autenticação email/senha
 - Client App configurado para fluxos:
   - ALLOW_USER_PASSWORD_AUTH
@@ -204,6 +209,7 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
   - Refresh Token: 30 dias
 
 #### 5. Container Registry (ECR Module)
+
 - Repositórios para imagens Docker:
   - presigned-lambda-repo
   - auth-lambda-repo
@@ -211,6 +217,7 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
   - notification-repo
 
 #### 6. Orquestração (EKS Module)
+
 - Cluster EKS gerenciado
 - Node Group com 2 instâncias t3.medium
 - Security Groups para comunicação
@@ -218,6 +225,7 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
 - Integrações com CloudWatch
 
 #### 7. Funções Serverless (Lambda Module)
+
 - Lambda para autenticação
 - Lambda para geração de URLs pré-assinadas
 - Ambiente configurado para Java
@@ -225,6 +233,7 @@ AWS Lambda é um serviço de computação serverless que permite executar códig
 - CloudWatch Logs integrado
 
 #### 8. API Gateway
+
 - REST API com endpoints:
   - /auth: Autenticação (POST)
   - /presigned: Geração de URLs (GET)
