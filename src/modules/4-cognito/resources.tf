@@ -67,3 +67,23 @@ resource "aws_cognito_user" "upload_user" {
   }
   password = var.cognito_user_password
 }
+
+resource "aws_cognito_user" "upload_test_user" {
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+  username     = "ref_jean@hotmail.com"
+  attributes = {
+    email_verified = "true"
+    email          = "ref_jean@hotmail.com"
+  }
+  password = var.cognito_user_password
+}
+
+resource "aws_cognito_user" "upload_test_user_2" {
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+  username     = "jeancarlos.moreiradasilva@gmail.com"
+  attributes = {
+    email_verified = "true"
+    email          = "jeancarlos.moreiradasilva@gmail.com"
+  }
+  password = var.cognito_user_password
+}
